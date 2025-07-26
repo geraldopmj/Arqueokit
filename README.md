@@ -66,7 +66,7 @@ QGIS already comes with several built-in Python libraries, but some used by the 
         
 4.  **Activate the plugin**
     -   After installation, check if the plugin is enabled in the list of installed plugins.
-    -   It will be available under the **Plugins** menu or toolbar.
+    -   It will be available in the **Processing Toolbox**.
         
 > ⚠️ **Note:** If you are updating from a previous version, it is recommended to remove it first to avoid conflicts.
 
