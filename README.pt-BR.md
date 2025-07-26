@@ -42,11 +42,9 @@ Arqueokit é um plugin desenvolvido para otimizar a análise e o processamento d
 
 O QGIS já vem com diversas bibliotecas Python integradas, mas algumas utilizadas pelo plugin precisam ser instaladas manualmente, pois não estão incluídas no ambiente Python padrão do QGIS. É necessário instalar as seguintes bibliotecas via `pip` (usando o **OSGeo4W Shell**):
 
-bash
 
-CopiarEditar
 
-`pip install pandas matplotlib seaborn rasterio shapely pillow requests` 
+    pip install pandas matplotlib seaborn rasterio shapely pillow requests 
 
 ### **Para que serve cada biblioteca:**
 
