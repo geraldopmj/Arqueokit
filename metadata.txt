@@ -1,0 +1,47 @@
+# This file contains metadata for your plugin.
+
+# This file should be included when you package your plugin.# Mandatory items:
+
+[general]
+name=Arqueokit
+qgisMinimumVersion=3.40
+description=GIS algorithms for Archaeologists
+version=0.1
+author=Geraldo Pereira de Morais Júnior
+email=geraldo.pmj@gmail.com
+
+about=Archeokit is a plugin designed to streamline the analysis and processing of geospatial data for archaeology.
+
+tracker=https://github.com/geraldopmj/Arqueokit/issues
+repository=https://github.com/geraldopmj/Arqueokit/
+# End of mandatory metadata
+
+# Recommended items:
+
+hasProcessingProvider=yes
+# Uncomment the following line and add your changelog:
+# changelog=
+
+# Tags are comma separated with spaces allowed
+tags=archaeology, brazil, FUNAI, IPHAN, wfs, bivariate,geoprocessing, grid
+
+homepage=https://github.com/geraldopmj/Arqueokit/
+category=Analysis
+icon=icon.png
+# experimental flag
+experimental=False
+
+# deprecated flag (applies to the whole plugin, not just a single version)
+deprecated=False
+
+# Since QGIS 3.8, a comma separated list of plugins to be installed
+# (or upgraded) can be specified.
+# Check the documentation for more information.
+# plugin_dependencies=
+
+Category of the plugin: Raster, Vector, Database or Web, Archaeology, Brazil
+# category=
+
+# If the plugin can run on QGIS Server.
+server=False
+
