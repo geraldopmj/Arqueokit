@@ -29,19 +29,11 @@ Archeokit is a plugin designed to streamline the analysis and processing of geos
 \* FUNAI: Fundação Nacional dos Povos Indígenas (Brazil)
 
 --------------------------------------------------
+## How to install
+### External dependencies
+QGIS already comes with several built-in Python libraries, but some used by the plugin must be installed manually, as they are not included in the standard QGIS Python environment. You must install the following external libraries via `pip` (using the **OSGeo4W Shell**):
 
-## External dependencies
-QGIS already comes with several built-in Python libraries, but some used by the plugin must be installed manually, as they are not included in the standard QGIS Python environment.
-### **Libraries you must install**
-You must install the following external libraries via `pip` (using the **OSGeo4W Shell**):
-
-    pip install pandas
-    pip install matplotlib
-    pip install seaborn
-    pip install rasterio
-    pip install shapely
-    pip install pillow
-    pip install requests
+    pip install pandas matplotlib seaborn rasterio shapely pillow requests
 
 ### **What each library is for:**
 
@@ -52,6 +44,29 @@ You must install the following external libraries via `pip` (using the **OSGeo4W
 -   **shapely** → advanced geometric operations for vector data
 -   **pillow (PIL)** → image processing (e.g., creation of PNG legends)
 -   **requests** → connecting with external services (e.g., downloading data)
+
+### **Download and install the package in QGIS**
+
+1.  **Download the plugin (.zip) **
+        -   Click the green **Code** button (at the top-right of the file list in [this page](https://github.com/geraldopmj/Arqueokit/tree/main)).
+    -   Select **Download ZIP**.
+    -   The file will be downloaded to your computer (do not unzip it).
+   
+2.  **Open QGIS**
+    -   Go to **Plugins → Manage and Install Plugins…**
+    -   Click on **Install from ZIP** (button in the bottom-left corner).
+        
+3.  **Install the plugin**
+    -   Locate the downloaded `.zip` file.
+    -   Click **Install Plugin**.
+    -   QGIS will automatically install the plugin.
+        
+4.  **Activate the plugin**
+    -   After installation, check if the plugin is enabled in the list of installed plugins.
+    -   It will be available under the **Plugins** menu or toolbar.
+        
+> ⚠️ **Note:** If you are updating from a previous version, it is recommended to remove it first to avoid conflicts.
+
 
  ## **Credits & Contributions**
 
