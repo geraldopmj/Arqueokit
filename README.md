@@ -53,14 +53,17 @@ QGIS already comes with several built-in Python libraries, but some used by the 
 1.  **Download the plugin (.zip)**
     -   Click the green **Code** button (at the top-right of the file list in [this page](https://github.com/geraldopmj/Arqueokit/tree/main)).
     -   Select **Download ZIP**.
-    -   The file will be downloaded to your computer (do not unzip it).
+    -   The file will be downloaded to your computer.
+    -   Extract the contents of the ZIP file.
+    -   Rename the extracted folder from Arqueokit-main to Arqueokit (the name must match the plugin name exactly).
+    -   ZIP the renamed folder (QGIS only accept .zip files).
    
 2.  **Open QGIS**
     -   Go to **Plugins → Manage and Install Plugins…**
     -   Click on **Install from ZIP** (button in the bottom-left corner).
         
 3.  **Install the plugin**
-    -   Locate the downloaded `.zip` file.
+    -   Locate the `.zip` file.
     -   Click **Install Plugin**.
     -   QGIS will automatically install the plugin.
         
