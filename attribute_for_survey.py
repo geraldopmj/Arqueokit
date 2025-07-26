@@ -1,18 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-/***********************************************
- Arqueokit - QGIS Plugin
- Adicionar Atributos de Ficha Arqueológica
- Autor: Geraldo Pereira de Morais Júnior
- Email: geraldo.pmj@gmail.com
- ***********************************************/
-"""
-
-__author__ = 'Geraldo Pereira de Morais Júnior'
-__date__ = '2025-07-26'
-__copyright__ = '(C) 2025 by Geraldo Pereira de Morais Júnior'
-__revision__ = '$Format:%H$'
-
 from qgis.PyQt.QtCore import QCoreApplication, QVariant
 from qgis.core import (
     QgsProcessing,
@@ -24,7 +10,6 @@ from qgis.core import (
 
 
 class AddRecordAttributes(QgsProcessingAlgorithm):
-    """Adiciona os campos padrão da ficha arqueológica a uma camada de pontos"""
 
     INPUT = 'INPUT'
 
@@ -37,14 +22,11 @@ class AddRecordAttributes(QgsProcessingAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         layer = self.parameterAsVectorLayer(parameters, self.INPUT, context)
-
         if not layer:
             raise QgsProcessingException(self.tr("Camada inválida ou não encontrada."))
 
-        if not layer.isEditable():
-            layer.startEditing()
+        dp = layer.dataProvider()
 
-        # Definições dos campos com tipos corretos
         field_defs = {
             "id": QVariant.Int,
             "Name": QVariant.String,
@@ -61,87 +43,119 @@ class AddRecordAttributes(QgsProcessingAlgorithm):
         for c in range(1, 6):
             field_defs[f'prof_C{c}'] = QVariant.String
             field_defs[f'solo_C{c}'] = QVariant.String
-            field_defs[f'vestigios_C{c}'] = QVariant.String
+            field_defs[f'vstg_C{c}'] = QVariant.String
             field_defs[f'qnt_vstgC{c}'] = QVariant.Int
 
         for f in ['foto1', 'foto2', 'foto3', 'foto4']:
             field_defs[f] = QVariant.String
 
-        # Adiciona apenas campos que não existem
+        # -------------------------------
+        # 1) Remover atributos existentes um por um
+        # -------------------------------
         existing_fields = [f.name() for f in layer.fields()]
+        for name in field_defs:
+            if name in existing_fields:
+                idx = layer.fields().indexFromName(name)
+                if idx >= 0:
+                    if not dp.deleteAttributes([idx]):
+                        raise QgsProcessingException(self.tr(f"Erro ao remover campo {name}."))
+                    layer.updateFields()
+                    feedback.pushInfo(f"Campo removido: {name}")
+                    if not layer.commitChanges():
+                        layer.startEditing()
+                        feedback.pushInfo(f"Salvo após remover {name}")
+
+        # -------------------------------
+        # 2) Adicionar atributos um por um
+        # -------------------------------
         for name, qtype in field_defs.items():
-            if name not in existing_fields:
-                layer.addAttribute(QgsField(name, qtype))
+            if layer.fields().indexFromName(name) == -1:
+                if not dp.addAttributes([QgsField(name, qtype)]):
+                    raise QgsProcessingException(self.tr(f"Erro ao adicionar campo {name}."))
+                layer.updateFields()
+                feedback.pushInfo(f"Campo adicionado: {name}")
+                if not layer.commitChanges():
+                    layer.startEditing()
+                    feedback.pushInfo(f"Salvo após adicionar {name}")
 
-        layer.updateFields()
-
-        idx_lat = layer.fields().indexFromName('Lat')
-        idx_lon = layer.fields().indexFromName('Long')
-        idx_id = layer.fields().indexFromName('id')
-        idx_name = layer.fields().indexFromName('Name')
-
-        if idx_lat < 0 or idx_lon < 0 or idx_id < 0 or idx_name < 0:
-            raise QgsProcessingException(self.tr("Erro ao criar os campos essenciais (id, Name, Lat, Long)."))
-
-        # Coletar feições para ordenar NW -> SE
+        # -------------------------------
+        # 3) Atualizar id NW→SE
+        # -------------------------------
         pontos = []
         for feat in layer.getFeatures():
             geom = feat.geometry()
             if geom and not geom.isEmpty():
                 p = geom.asPoint()
-                pontos.append((feat.id(), p.y(), p.x()))  # (fid, lat, lon)
+                pontos.append((feat.id(), p.y(), p.x()))
 
         if not pontos:
-            raise QgsProcessingException(self.tr("A camada não contém feições para processar."))
+            raise QgsProcessingException(self.tr("A camada não contém feições."))
 
-        # Ordenar NW -> SE (latitude decrescente e longitude crescente)
         pontos.sort(key=lambda x: (-x[1], x[2]))
+        idx_id = layer.fields().indexFromName('id')
+        attr_changes = {}
+        for ordem, (fid, _, _) in enumerate(pontos, start=1):
+            attr_changes[fid] = {idx_id: ordem}
 
-        # Preencher atributos automáticos
-        for ordem, (fid, lat, lon) in enumerate(pontos, start=1):
-            # id = $id
-            layer.changeAttributeValue(fid, idx_id, ordem)
+        if not dp.changeAttributeValues(attr_changes):
+            raise QgsProcessingException(self.tr("Erro ao atualizar campo id."))
 
-            # coordenadas
-            layer.changeAttributeValue(fid, idx_lat, lat)
-            layer.changeAttributeValue(fid, idx_lon, lon)
-
-            # Name = PT-numero ordenado
-            layer.changeAttributeValue(fid, idx_name, f"PT-{ordem}")
-
+        feedback.pushInfo("IDs (NW→SE) atualizados com sucesso.")
         if not layer.commitChanges():
-            raise QgsProcessingException(self.tr("Não foi possível salvar as alterações."))
+            layer.startEditing()
+            feedback.pushInfo("Salvo após atualizar IDs")
+            
+        # -------------------------------
+        # 3.1) Atualizar Name = 'PT-' || id
+        # -------------------------------
+        idx_name = layer.fields().indexFromName('Name')
+        attr_changes = {}
+        for feat in layer.getFeatures():
+            new_name = f"PT-{feat['id']}"
+            attr_changes[feat.id()] = {idx_name: new_name}
 
-        feedback.pushInfo(self.tr("Campos da ficha adicionados e atributos automáticos preenchidos (Name = PT-<número> NW→SE)!"))
+        if not dp.changeAttributeValues(attr_changes):
+            raise QgsProcessingException(self.tr("Erro ao atualizar campo Name."))
+
+        feedback.pushInfo("Campo Name atualizado com sucesso (PT-<id>).")
+        if not layer.commitChanges():
+            layer.startEditing()
+            feedback.pushInfo("Salvo após atualizar Name")
+
+        # -------------------------------
+        # 4) Atualizar Lat/Long
+        # -------------------------------
+        idx_lat = layer.fields().indexFromName('Lat')
+        idx_lon = layer.fields().indexFromName('Long')
+        attr_changes = {}
+        for fid, lat, lon in pontos:
+            attr_changes[fid] = {idx_lat: lat, idx_lon: lon}
+
+        if not dp.changeAttributeValues(attr_changes):
+            raise QgsProcessingException(self.tr("Erro ao atualizar campos Lat/Long."))
+
+        feedback.pushInfo("Coordenadas Lat/Long atualizadas com sucesso.")
+        if not layer.commitChanges():
+            layer.startEditing()
+            feedback.pushInfo("Salvo após atualizar Lat/Long")
+
         return {}
 
-    # Metadados do algoritmo
+    # Metadados
     def name(self):
-        return 'adicionar_atributos_ficha'
-
+        return 'adicionar_atributos_ficha_step'
     def displayName(self):
-        return self.tr('Adicionar Atributos de Ficha Arqueológica')
-
+        return self.tr('Adicionar Atributos de Ficha')
     def group(self):
         return 'Adicionar Atributo'
-
     def groupId(self):
         return 'adicionar_atributo'
-
     def createInstance(self):
         return AddRecordAttributes()
-
     def shortHelpString(self):
         return self.tr("""
-        Este algoritmo adiciona os campos utilizados nas fichas arqueológicas diretamente na camada (in-place) 
-        e preenche automaticamente:
-        - id = $id
-        - Lat/Long = coordenadas do ponto
-        - Name = PT-<número ordenado NW→SE>
-        - Data (Date)
-        - qnt_vstgC# (Int)
-        Os demais campos são de texto (String).
+        Remove e adiciona os campos da ficha arqueológica em etapas.
+        Salva a camada a cada sucesso para reduzir travamentos.
         """)
-
     def tr(self, string):
         return QCoreApplication.translate('Processing', string)

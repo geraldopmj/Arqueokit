@@ -2,14 +2,13 @@
 """
 /***********************************************
  Arqueokit - QGIS Plugin
- Ordenação espacial NW → SE
+ Ordenação espacial NW → SE (Passo a Passo)
  Autor: Geraldo Pereira de Morais Júnior
- Email: geraldo.pmj@gmail.com
  ***********************************************/
 """
 
 __author__ = 'Geraldo Pereira de Morais Júnior'
-__date__ = '2025-07-19'
+__date__ = '2025-07-26'
 __copyright__ = '(C) 2025 by Geraldo Pereira de Morais Júnior'
 __revision__ = '$Format:%H$'
 
@@ -17,18 +16,12 @@ from qgis.PyQt.QtCore import QCoreApplication, QVariant
 from qgis.core import (
     QgsProcessing,
     QgsProcessingAlgorithm,
-    QgsProcessingParameterFeatureSource,
     QgsProcessingParameterVectorLayer,
     QgsProcessingParameterString,
-    QgsProcessingParameterField,
-    QgsVectorLayer,
-    QgsFeature,
     QgsField,
-    QgsExpression,
-    QgsExpressionContext,
-    QgsExpressionContextUtils,
-    edit
+    QgsProcessingException
 )
+
 
 class OrdenarPontosNWSE(QgsProcessingAlgorithm):
     LAYER = 'LAYER'
@@ -42,7 +35,7 @@ class OrdenarPontosNWSE(QgsProcessingAlgorithm):
         ))
         self.addParameter(QgsProcessingParameterString(
             self.CAMPO,
-            'Nome do campo a ser criado',
+            'Nome do campo de ordenação',
             defaultValue='OrderNum'
         ))
 
@@ -50,16 +43,43 @@ class OrdenarPontosNWSE(QgsProcessingAlgorithm):
         layer = self.parameterAsVectorLayer(parameters, self.LAYER, context)
         nome_campo = self.parameterAsString(parameters, self.CAMPO, context)
 
-        if not layer.isEditable():
-            layer.startEditing()
+        if not layer:
+            raise QgsProcessingException("Camada inválida.")
 
-        if nome_campo not in [f.name() for f in layer.fields()]:
-            layer.dataProvider().addAttributes([QgsField(nome_campo, QVariant.Int)])
+        dp = layer.dataProvider()
+
+        # -------------------------------
+        # 1) Remover o campo de ordenação se já existir
+        # -------------------------------
+        idx = layer.fields().indexFromName(nome_campo)
+        if idx != -1:
+            if not dp.deleteAttributes([idx]):
+                raise QgsProcessingException(f"Erro ao remover o campo {nome_campo}.")
             layer.updateFields()
+            feedback.pushInfo(f"Campo {nome_campo} removido.")
+            if not layer.commitChanges():
+                layer.startEditing()
+                feedback.pushInfo(f"Salvo após remover {nome_campo}.")
 
-        campo_idx = layer.fields().indexOf(nome_campo)
+        # -------------------------------
+        # 2) Criar o campo de ordenação
+        # -------------------------------
+        if layer.fields().indexFromName(nome_campo) == -1:
+            if not dp.addAttributes([QgsField(nome_campo, QVariant.Int)]):
+                raise QgsProcessingException(f"Erro ao adicionar o campo {nome_campo}.")
+            layer.updateFields()
+            feedback.pushInfo(f"Campo {nome_campo} criado.")
+            if not layer.commitChanges():
+                layer.startEditing()
+                feedback.pushInfo(f"Salvo após criar {nome_campo}.")
 
-        # Coleta e ordena
+        campo_idx = layer.fields().indexFromName(nome_campo)
+        if campo_idx == -1:
+            raise QgsProcessingException("Não foi possível localizar o campo de ordenação.")
+
+        # -------------------------------
+        # 3) Coletar feições e ordenar NW → SE
+        # -------------------------------
         pontos = []
         for feat in layer.getFeatures():
             geom = feat.geometry()
@@ -67,20 +87,25 @@ class OrdenarPontosNWSE(QgsProcessingAlgorithm):
                 p = geom.asPoint()
                 pontos.append((feat.id(), p.y(), p.x()))  # (fid, lat, lon)
 
-        pontos.sort(key=lambda x: (-x[1], x[2]))  # NW → SE
-
-        if not layer.isEditable():
-            if not layer.startEditing():
-                raise QgsProcessingException("Não foi possível iniciar a edição da camada.")
-        
-        if not any(layer.getFeatures()):
+        if not pontos:
             raise QgsProcessingException("A camada não contém feições para ordenar.")
 
-        for i, (fid, _, _) in enumerate(pontos, start=1):
-            layer.changeAttributeValue(fid, campo_idx, i)
+        pontos.sort(key=lambda x: (-x[1], x[2]))  # latitude desc, longitude asc
 
+        # -------------------------------
+        # 4) Atualizar valores de ordenação em lote
+        # -------------------------------
+        attr_changes = {}
+        for ordem, (fid, _, _) in enumerate(pontos, start=1):
+            attr_changes[fid] = {campo_idx: ordem}
+
+        if not dp.changeAttributeValues(attr_changes):
+            raise QgsProcessingException("Erro ao atualizar a ordenação NW→SE.")
+
+        feedback.pushInfo(f"Campo {nome_campo} atualizado com sucesso (NW→SE).")
         if not layer.commitChanges():
-            raise QgsProcessingException("Falha ao salvar as alterações na camada.")
+            layer.startEditing()
+            feedback.pushInfo("Salvo após atualizar ordenação.")
 
         return {}
 
@@ -101,9 +126,8 @@ class OrdenarPontosNWSE(QgsProcessingAlgorithm):
 
     def shortHelpString(self):
         return self.tr("""
-        Este algoritmo ordena geograficamente uma camada de pontos do noroeste para o sudeste (NW → SE),
-        baseado nas coordenadas (latitude decrescente e longitude crescente), e atribui um número sequencial
-        em um novo campo inteiro.
+        Remove e recria o campo de ordenação e atribui valores de 1..n
+        seguindo a ordem espacial NW → SE.
         """)
 
     def tr(self, string):
