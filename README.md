@@ -1,10 +1,10 @@
-
+<img src="https://github.com/geraldopmj/Arqueokit/blob/main/icon.png" width="75" height="75">
 
 # Arqueokit
 
 [English](README.md) | [Português (Brasil)](README.pt-BR.md)
 
-Archeokit is a plugin designed to streamline the analysis and processing of geospatial data for archaeology.
+Archeokit is a QGIS plugin designed to streamline the analysis and processing of geospatial data for archaeology.
 
 ### Features:
 - Download layers commonly used  
