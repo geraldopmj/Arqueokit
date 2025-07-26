@@ -50,7 +50,7 @@ QGIS already comes with several built-in Python libraries, but some used by the 
 
 ### **Download and install the package in QGIS**
 
-1.  **Download the plugin (.zip) **
+1.  **Download the plugin (.zip)**
         -   Click the green **Code** button (at the top-right of the file list in [this page](https://github.com/geraldopmj/Arqueokit/tree/main)).
     -   Select **Download ZIP**.
     -   The file will be downloaded to your computer (do not unzip it).
