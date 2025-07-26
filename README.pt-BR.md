@@ -93,7 +93,7 @@ O QGIS já vem com diversas bibliotecas Python integradas, mas algumas utilizada
     
     -   Após a instalação, verifique se o plugin está habilitado na lista de complementos instalados.
         
-    -   Ele estará disponível no menu **Complementos** ou na barra de ferramentas.
+    -   Ele estará disponível na **Caixa de Feramentas de Processamento**.
         
 
 > ⚠️ **Atenção:** Se estiver atualizando a partir de uma versão anterior, recomenda-se removê-la antes para evitar conflitos.
