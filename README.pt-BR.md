@@ -48,9 +48,9 @@ O QGIS já vem com diversas bibliotecas Python integradas, mas algumas utilizada
 
 ### **Para que serve cada biblioteca:**
 
--   **pandas** → manipulação da tabela de atributos (DataFrames)
+-   **pandas** → manipulação da tabelas (DataFrames)
     
--   **matplotlib** → geração de gráficos (incluindo o gráfico _Burndown_)
+-   **matplotlib** → geração de gráficos
     
 -   **seaborn** → gráficos aprimorados e estilizados
     
