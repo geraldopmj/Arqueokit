@@ -41,7 +41,7 @@ QGIS already comes with several built-in Python libraries, but some used by the 
 ### **What each library is for:**
 
 -   **pandas** → attribute table manipulation (DataFrames)
--   **matplotlib** → graph generation (including the Burndown Chart)
+-   **matplotlib** → graph generation
 -   **seaborn** → enhanced and styled graphs
 -   **rasterio** → reading and writing raster data
 -   **shapely** → advanced geometric operations for vector data
@@ -51,7 +51,7 @@ QGIS already comes with several built-in Python libraries, but some used by the 
 ### **Download and install the package in QGIS**
 
 1.  **Download the plugin (.zip)**
-        -   Click the green **Code** button (at the top-right of the file list in [this page](https://github.com/geraldopmj/Arqueokit/tree/main)).
+    -   Click the green **Code** button (at the top-right of the file list in [this page](https://github.com/geraldopmj/Arqueokit/tree/main)).
     -   Select **Download ZIP**.
     -   The file will be downloaded to your computer (do not unzip it).
    
