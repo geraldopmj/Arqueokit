@@ -1,6 +1,9 @@
 
 
 # Arqueokit
+
+[English](README.md) | [Português (Brasil)](README.pt-BR.md)
+
 Archeokit is a plugin designed to streamline the analysis and processing of geospatial data for archaeology.
 
 ### Features:
