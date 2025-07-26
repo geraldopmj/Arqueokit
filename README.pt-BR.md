@@ -70,31 +70,24 @@ O QGIS já vem com diversas bibliotecas Python integradas, mas algumas utilizada
 1.  **Baixar o plugin (.zip)**
     
     -   Clique no botão verde **Code** (no canto superior direito da lista de arquivos [nesta página](https://github.com/geraldopmj/Arqueokit/tree/main)).
-        
     -   Selecione **Download ZIP**.
+    -   The file will be downloaded to your computer.
+    -   Extraia o conteúdo do arquivo ZIP.
+    -   Renomeie a pasta Arqueokit-main para Arqueokit.
+    -   compact em formato ZIP a pasta renomeada (QGIS aceita apenas arquivos .zip ).
         
-    -   O arquivo será baixado para o seu computador (não descompacte).
-        
-2.  **Abrir o QGIS**
-    
+2.  **Abra o QGIS**
     -   Vá em **Complementos → Gerenciar e Instalar Complementos…**
-        
     -   Clique em **Instalar a partir de um ZIP** (botão no canto inferior esquerdo).
         
 3.  **Instalar o plugin**
-    
-    -   Localize o arquivo `.zip` baixado.
-        
+    -   Localize o arquivo `.zip`.
     -   Clique em **Instalar complemento**.
-        
     -   O QGIS instalará o plugin automaticamente.
         
 4.  **Ativar o plugin**
-    
-    -   Após a instalação, verifique se o plugin está habilitado na lista de complementos instalados.
-        
+    -   Após a instalação, verifique se o plugin está habilitado na lista de complementos instalados.  
     -   Ele estará disponível na **Caixa de Feramentas de Processamento**.
-        
 
 > ⚠️ **Atenção:** Se estiver atualizando a partir de uma versão anterior, recomenda-se removê-la antes para evitar conflitos.
 
@@ -116,9 +109,7 @@ O QGIS já vem com diversas bibliotecas Python integradas, mas algumas utilizada
 ## **Licença**
 
 Este plugin está licenciado sob a **GNU Affero General Public License v3.0 (AGPL-3.0)**.
-
 -   Você é livre para usar, modificar e distribuir este software, desde que qualquer versão modificada também seja lançada sob a licença **AGPL-3.0**.
-    
 -   Se você executar uma versão modificada deste software em um servidor e disponibilizá-la para usuários por meio de uma rede, deverá também fornecer o código-fonte das suas modificações.
     
 
