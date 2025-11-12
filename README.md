@@ -15,7 +15,7 @@ Archeokit is a QGIS plugin designed to streamline the analysis and processing of
 ✅ Create radial point grids from points (common method for archaeological site delimitation in Brazil)  
 - Faster Bivariate maps  
 ✅ Generate a bivariate raster from two rasters  
-✅ Generate a bivariate RGB raster, already symbolized, and provide a PNG legend ready for maps  
+✅ Generate a bivariate RGB raster, already symbolized, and provide a PNG legend ready for layouts  
 - Charts without leaving QGIS  
 ✅ Create a burndown chart based on a date attribute (useful for team coordination during surveying)  
 ✅ Create a Count Unique graph for a single attribute (used during LULC sampling to maintain sample balance)  
