@@ -30,19 +30,20 @@ __revision__ = '$Format:%H$'
 from qgis.core import QgsProcessingProvider
 from qgis.PyQt.QtGui import QIcon
 import os
-from .raster_bivariate import BivariateRaster
-from .raster_bivariate_rgb import BivariateRasterRGB
-from .iphan_download import IphanDownloader
-from .funai_download import FunaiDownloader
-from .attribute_nwse_ordering import OrdenarPontosNWSE
-from .geoprocess_best_grid import best_grid
-from .attribute_add_x_y import add_x_y
-from .graph_count_attribute_unique import CountUniqueAttribute
-from .graph_aggregation_atribute import AttributeAggregationPlot
-from .graph_bundown import BurndownTemporal
-from .graph_aggregation_feature import FeatureSumPlot
-from .geoprocess_radial_points import radial_points
-from .attribute_for_survey import AddRecordAttributes
+from .processing.raster_bivariate import BivariateRaster
+from .processing.raster_bivariate_rgb import BivariateRasterRGB
+from .processing.iphan_download import IphanDownloader
+from .processing.funai_download import FunaiDownloader
+from .processing.attribute_nwse_ordering import OrdenarPontosNWSE
+from .processing.geoprocess_best_grid import best_grid
+from .processing.attribute_add_x_y import add_x_y
+from .processing.graph_count_attribute_unique import CountUniqueAttribute
+from .processing.graph_aggregation_atribute import AttributeAggregationPlot
+from .processing.graph_bundown import BurndownTemporal
+from .processing.graph_aggregation_feature import FeatureSumPlot
+from .processing.geoprocess_radial_points import radial_points
+from .processing.attribute_for_survey import AddRecordAttributes
+from .processing.geoprocess_linefix import ConnectLineEndpoints
 
 
 class ArqueokitProvider(QgsProcessingProvider):
@@ -77,6 +78,8 @@ class ArqueokitProvider(QgsProcessingProvider):
         self.addAlgorithm(FeatureSumPlot())
         self.addAlgorithm(radial_points())
         self.addAlgorithm(AddRecordAttributes())
+        self.addAlgorithm(ConnectLineEndpoints())
+
         
     def id(self):
         """
