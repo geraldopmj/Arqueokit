@@ -13,7 +13,7 @@ Archeokit is a QGIS plugin designed to streamline the analysis and processing of
 - Geoprocessing faster grids  
 ✅ Analyze and create point grids that maximize the number of points inside a polygon (useful for surveying)  
 ✅ Create radial point grids from points (common method for archaeological site delimitation in Brazil)
-- Correct Data faster:
+- Correct Data faster  
 ✅ Connect start and end points of line layers (up to the threshold).
 - Faster Bivariate maps  
 ✅ Generate a bivariate raster from two rasters  
