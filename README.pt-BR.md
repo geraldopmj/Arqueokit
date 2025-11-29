@@ -100,7 +100,7 @@ O QGIS já vem com diversas bibliotecas Python integradas, mas algumas utilizada
 
 -   Geraldo Pereira de Morais Júnior
     
-    -   _Analista/Desenvolvedor GIS & Arqueólogo_
+    -   _Cientista de Dados, Analista/Desenvolvedor GIS e Arqueólogo_
         
     -   Email: **geraldo.pmj@gmail.com**
         
