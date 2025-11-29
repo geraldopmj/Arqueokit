@@ -44,6 +44,8 @@ from .processing.graph_aggregation_feature import FeatureSumPlot
 from .processing.geoprocess_radial_points import radial_points
 from .processing.attribute_for_survey import AddRecordAttributes
 from .processing.geoprocess_linefix import ConnectLineEndpoints
+from .processing.geoprocess_update import update_like_arcgis
+from .processing.geoprocess_identity import identity_like_arcgis
 
 
 class ArqueokitProvider(QgsProcessingProvider):
@@ -79,6 +81,8 @@ class ArqueokitProvider(QgsProcessingProvider):
         self.addAlgorithm(radial_points())
         self.addAlgorithm(AddRecordAttributes())
         self.addAlgorithm(ConnectLineEndpoints())
+        self.addAlgorithm(update_like_arcgis())
+        self.addAlgorithm(identity_like_arcgis())
 
         
     def id(self):
