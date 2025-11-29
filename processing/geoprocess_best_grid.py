@@ -153,7 +153,7 @@ class best_grid(QgsProcessingAlgorithm):
                 fet = QgsFeature()
                 fet.setGeometry(geom)
                 fet.setAttributes(
-                    [idx + 1, f"PT-{idx+1}", None, round(pt.x(), 2), round(pt.y(), 2),
+                    [idx + 1, f"PT-{idx+1}", round(pt.x(), 2), round(pt.y(), 2), None,
                      None, None, None, None, None] +
                     [None]*20 +  # 4 camadas × 5 atributos (todos como None)
                     [None]       # observacao

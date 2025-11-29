@@ -36,7 +36,7 @@ from .processing.iphan_download import IphanDownloader
 from .processing.funai_download import FunaiDownloader
 from .processing.attribute_nwse_ordering import OrdenarPontosNWSE
 from .processing.geoprocess_best_grid import best_grid
-from .processing.attribute_add_x_y import add_x_y
+from .processing.attribute_add_x_y import AddXY
 from .processing.graph_count_attribute_unique import CountUniqueAttribute
 from .processing.graph_aggregation_atribute import AttributeAggregationPlot
 from .processing.graph_bundown import BurndownTemporal
@@ -73,7 +73,7 @@ class ArqueokitProvider(QgsProcessingProvider):
         self.addAlgorithm(FunaiDownloader())
         self.addAlgorithm(OrdenarPontosNWSE())
         self.addAlgorithm(best_grid())
-        self.addAlgorithm(add_x_y())
+        self.addAlgorithm(AddXY())
         self.addAlgorithm(CountUniqueAttribute())
         self.addAlgorithm(AttributeAggregationPlot())
         self.addAlgorithm(BurndownTemporal())

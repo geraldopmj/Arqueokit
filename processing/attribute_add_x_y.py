@@ -2,7 +2,7 @@
 """
 /***********************************************
  Arqueokit - QGIS Plugin
- Atualizar Longitude e Latitude (Passo a Passo)
+ Atualizar Longitude e Latitude (Estável)
  Autor: Geraldo Pereira de Morais Júnior
  ***********************************************/
 """
@@ -10,7 +10,6 @@
 __author__ = 'Geraldo Pereira de Morais Júnior'
 __date__ = '2025-07-26'
 __copyright__ = '(C) 2025 by Geraldo Pereira de Morais Júnior'
-__revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import QCoreApplication, QVariant
 from qgis.core import (
@@ -21,92 +20,82 @@ from qgis.core import (
     QgsProcessingException
 )
 
-
-class add_x_y(QgsProcessingAlgorithm):
+class AddXY(QgsProcessingAlgorithm):
     ENTRADA = 'ENTRADA'
 
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterVectorLayer(
             self.ENTRADA,
-            'Camada de entrada (será editada)',
+            self.tr('Camada de entrada (será editada)'),
             [QgsProcessing.TypeVectorPoint]
         ))
 
     def processAlgorithm(self, parameters, context, feedback):
         layer = self.parameterAsVectorLayer(parameters, self.ENTRADA, context)
         if not layer:
-            raise QgsProcessingException("Camada de entrada inválida.")
+            raise QgsProcessingException(self.tr("Camada de entrada inválida."))
 
         dp = layer.dataProvider()
 
-        # -------------------------------
-        # 1) Remover os campos Latitude e Longitude (se existirem)
-        # -------------------------------
-        campos_remover = []
-        for campo in ["Longitude", "Latitude"]:
-            idx = layer.fields().indexFromName(campo)
-            if idx != -1:
-                campos_remover.append(idx)
+        if not layer.isEditable():
+            layer.startEditing()
 
-        if campos_remover:
-            if not dp.deleteAttributes(campos_remover):
-                raise QgsProcessingException("Erro ao remover campos Latitude/Longitude.")
-            layer.updateFields()
-            feedback.pushInfo("Campos antigos Latitude/Longitude removidos com sucesso.")
-            if not layer.commitChanges():
-                layer.startEditing()
-                feedback.pushInfo("Salvo após remover campos Latitude/Longitude.")
-
-        # -------------------------------
-        # 2) Adicionar campos Latitude e Longitude
-        # -------------------------------
+        feedback.pushInfo("Verificando estrutura da tabela...")
+        
+        campos_necessarios = ["Longitude", "Latitude"]
         novos_campos = []
-        if layer.fields().indexFromName("Longitude") == -1:
-            novos_campos.append(QgsField("Longitude", QVariant.Double, len=10, prec=4))
-        if layer.fields().indexFromName("Latitude") == -1:
-            novos_campos.append(QgsField("Latitude", QVariant.Double, len=10, prec=4))
+        
+        for campo in campos_necessarios:
+            if layer.fields().indexFromName(campo) == -1:
+                novos_campos.append(QgsField(campo, QVariant.Double, len=20, prec=6))
+            else:
+                feedback.pushInfo(f"Campo '{campo}' já existe. Será atualizado.")
 
         if novos_campos:
             if not dp.addAttributes(novos_campos):
-                raise QgsProcessingException("Erro ao adicionar campos Latitude/Longitude.")
+                raise QgsProcessingException(self.tr("Erro ao adicionar colunas de coordenadas."))
             layer.updateFields()
-            feedback.pushInfo("Campos Latitude/Longitude adicionados com sucesso.")
-            if not layer.commitChanges():
-                layer.startEditing()
-                feedback.pushInfo("Salvo após adicionar campos Latitude/Longitude.")
+            feedback.pushInfo(f"Criados {len(novos_campos)} novos campos.")
 
-        # -------------------------------
-        # 3) Atualizar os valores de Latitude e Longitude
-        # -------------------------------
         idx_lon = layer.fields().indexFromName("Longitude")
         idx_lat = layer.fields().indexFromName("Latitude")
 
         if idx_lon == -1 or idx_lat == -1:
-            raise QgsProcessingException("Campos Latitude/Longitude não encontrados após criação.")
+            raise QgsProcessingException(self.tr("Falha crítica: Campos de coordenadas inacessíveis."))
 
         attr_changes = {}
+        
         for feat in layer.getFeatures():
             geom = feat.geometry()
             if not geom or geom.isEmpty():
                 continue
+            
             pt = geom.asPoint()
+            
             attr_changes[feat.id()] = {
                 idx_lon: round(pt.x(), 2),
                 idx_lat: round(pt.y(), 2)
             }
 
-        if not dp.changeAttributeValues(attr_changes):
-            raise QgsProcessingException("Erro ao atualizar valores de Latitude/Longitude.")
+        if not attr_changes:
+            feedback.pushInfo("Nenhuma feição geométrica válida encontrada para atualizar.")
+            return {}
 
-        feedback.pushInfo("Latitude e Longitude atualizadas com sucesso.")
+        feedback.pushInfo(f"Atualizando coordenadas de {len(attr_changes)} pontos...")
+        
+        if not dp.changeAttributeValues(attr_changes):
+            raise QgsProcessingException(self.tr("Erro ao persistir valores na tabela."))
+
         if not layer.commitChanges():
-            layer.startEditing()
-            feedback.pushInfo("Salvo após atualizar Latitude/Longitude.")
+             layer.rollBack()
+             raise QgsProcessingException(self.tr("Erro ao salvar no disco. Verifique permissões."))
+        
+        feedback.pushInfo("Processo concluído com sucesso.")
 
         return {}
 
     def name(self):
-        return 'add_x_y'
+        return 'atualizar_lat_long'
 
     def displayName(self):
         return self.tr('Atualizar Longitude e Latitude')
@@ -118,12 +107,12 @@ class add_x_y(QgsProcessingAlgorithm):
         return 'adicionar_atributo'
 
     def createInstance(self):
-        return add_x_y()
+        return AddXY()
 
     def shortHelpString(self):
         return self.tr("""
-        Remove os campos 'Longitude' e 'Latitude' (se existirem),
-        os recria e atualiza com as coordenadas dos pontos (2 casas decimais).
+        Verifica e cria campos 'Longitude' e 'Latitude' e atualiza com coordenadas 
+        com precisão de 6 casas decimais. Não apaga dados existentes.
         """)
 
     def tr(self, string):
