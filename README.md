@@ -82,7 +82,7 @@ QGIS already comes with several built-in Python libraries, but some used by the 
 **Author:**
 
 -   Geraldo Pereira de Morais Júnior
-    -   _Data Scientis, GIS Analyst/Developer & Archaeologist_
+    -   _Data Scientist, GIS Analyst/Developer & Archaeologist_
     -   Email: **geraldo.pmj@gmail.com**   
 ## **License**
 
