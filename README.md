@@ -95,5 +95,6 @@ This plugin is licensed under the **GNU Affero General Public License v3.0 (AGPL
 
 **Disclaimer:**
 This software is provided “as is”, without any express or implied warranty.
+The author assumes no liability for damages arising from the use of this software.
 
 **Copyright © 2025 Geraldo Pereira de Morais Júnior**
