@@ -30,8 +30,9 @@ Archeokit is a QGIS plugin designed to streamline the analysis and processing of
 
 -- Looking forward to add many more scripts
 
-\* IPHAN: Instituto do Patrimônio Histórico e Artístico Nacional (Brazil)
-\* FUNAI: Fundação Nacional dos Povos Indígenas (Brazil)
+\* **IPHAN**: Instituto do Patrimônio Histórico e Artístico Nacional (Brazil)
+
+\* **FUNAI**: Fundação Nacional dos Povos Indígenas (Brazil)
 
 --------------------------------------------------
 ## How to install
