@@ -117,4 +117,8 @@ Este plugin está licenciado sob a **GNU Affero General Public License v3.0 (AGP
 **Texto completo da licença:**  
 [GNU AGPL-3.0](https://www.gnu.org/licenses/agpl-3.0.en.html)
 
+**Aviso legal:**
+Este software é fornecido “no estado em que se encontra”, sem qualquer garantia explícita ou implícita.
+O autor não assume responsabilidade por danos decorrentes do uso deste software.
+
 **Copyright © 2025 Geraldo Pereira de Morais Júnior**
