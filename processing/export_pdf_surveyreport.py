@@ -242,7 +242,7 @@ class ExportReportPDF(QgsProcessingAlgorithm):
         total_pontos = sum(pontos_por_resp.values())
 
         c.setFont("Helvetica-Bold", 12)
-        c.drawString(margin, y, "Produtividade por arqueólogo (Score 0–100):")
+        c.drawString(margin, y, "Produtividade por arqueólogo (base 100 + bônus por achados):")
         y -= 20
         c.setFont("Helvetica", 10)
 
@@ -254,17 +254,20 @@ class ExportReportPDF(QgsProcessingAlgorithm):
             media_por_dia = pontos / total_dias
             pct_vest = (vest / pontos * 100) if pontos else 0
 
+            vest_score = (vest / total_vest * 100) if total_vest > 0 else 0
+            prof_score = min(media_profundidade, 100)
+            pontos_score = (pontos / total_pontos * 100) if total_pontos > 0 else 0
+
             score = (
-                (0.4 * ((vest / total_vest * 100) if total_vest > 0 else 0)) +
-                (0.4 * media_profundidade) +
-                (0.2 * ((pontos / total_pontos * 100) if total_pontos > 0 else 0))
-            ) / 100
+                0.3 * vest_score +
+                (0.7 * prof_score + 0.3 * pontos_score)
+            )
 
             c.drawString(
                 margin, y,
                 f"{resp}: Prof. média {media_profundidade:.2f} cm | "
                 f"{pontos} pts ({media_por_dia:.1f}/dia) | {pct_vest:.1f}% c/ vestígios | "
-                f"Score: {score*100:.1f}"
+                f"Score: {score:.1f}"
             )
             y -= 15
 
@@ -340,6 +343,14 @@ class ExportReportPDF(QgsProcessingAlgorithm):
             )
             y -= 15
 
+        c.setFont("Helvetica-Oblique", 8)
+        c.setFillColor(cor_linha)
+        c.drawString(
+            margin,
+            margin - 5,
+            "* Score de produtividade: 100 cm e a meta ideal de profundidade. O score combina profundidade media, quantidade de pontos e bonus por pontos com vestigios."
+        )
+
         c.save()
         feedback.pushInfo(f"Relatório gerado: {output_pdf}")
         return {self.OUTPUT: output_pdf}
@@ -355,6 +366,17 @@ class ExportReportPDF(QgsProcessingAlgorithm):
 
     def groupId(self):
         return 'exportar_pdf'
+
+    def shortHelpString(self):
+        return self.tr("""
+        Gera um relatorio PDF com estatisticas gerais da prospeccao, distribuicoes por vegetacao e relevo,
+        produtividade por arqueologo, grafico de pontos por dia e resumo por camada.
+        O score de produtividade usa uma regra simples:
+        - 100 cm e a profundidade ideal;
+        - a profundidade media conta mais no score;
+        - a quantidade de pontos tambem conta;
+        - pontos com vestigios entram como bonus e podem fazer o score passar de 100.
+        """)
 
     def createInstance(self):
         return ExportReportPDF()
