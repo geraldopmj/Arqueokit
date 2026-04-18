@@ -238,8 +238,27 @@ class ExportReportPDF(QgsProcessingAlgorithm):
         y = min(col_y, col_y_rel) - 30
 
         # --- Score produtividade ---
-        total_vest = sum(vestigios_por_resp.values())
-        total_pontos = sum(pontos_por_resp.values())
+        medias_profundidade_por_resp = {
+            resp: statistics.mean(profundidades)
+            for resp, profundidades in profundidades_por_resp.items()
+            if profundidades
+        }
+        arqueologos_meta = [
+            pontos_por_resp[resp]
+            for resp, media in medias_profundidade_por_resp.items()
+            if media > 90
+        ]
+        if arqueologos_meta:
+            meta_pontos = statistics.mean(arqueologos_meta)
+        else:
+            if medias_profundidade_por_resp:
+                resp_referencia = max(
+                    medias_profundidade_por_resp,
+                    key=medias_profundidade_por_resp.get
+                )
+                meta_pontos = pontos_por_resp[resp_referencia]
+            else:
+                meta_pontos = 1
 
         c.setFont("Helvetica-Bold", 12)
         c.drawString(margin, y, "Produtividade por arqueólogo (base 100 + bônus por achados):")
@@ -247,20 +266,20 @@ class ExportReportPDF(QgsProcessingAlgorithm):
         c.setFont("Helvetica", 10)
 
         for resp, profundidades in profundidades_por_resp.items():
-            media_profundidade = statistics.mean(profundidades)
+            media_profundidade = medias_profundidade_por_resp[resp]
             pontos = pontos_por_resp[resp]
             vest = vestigios_por_resp[resp]
             total_dias = len(datas_por_resp[resp]) if datas_por_resp[resp] else 1
             media_por_dia = pontos / total_dias
             pct_vest = (vest / pontos * 100) if pontos else 0
 
-            vest_score = (vest / total_vest * 100) if total_vest > 0 else 0
             prof_score = min(media_profundidade, 100)
-            pontos_score = (pontos / total_pontos * 100) if total_pontos > 0 else 0
+            pontos_score = min((pontos / meta_pontos) * 100, 100) if meta_pontos > 0 else 0
+            vest_bonus = 2 * vest
 
             score = (
-                0.3 * vest_score +
-                (0.7 * prof_score + 0.3 * pontos_score)
+                (0.7 * prof_score + 0.3 * pontos_score) +
+                vest_bonus
             )
 
             c.drawString(
@@ -345,11 +364,18 @@ class ExportReportPDF(QgsProcessingAlgorithm):
 
         c.setFont("Helvetica-Oblique", 8)
         c.setFillColor(cor_linha)
-        c.drawString(
-            margin,
-            margin - 5,
-            "* Score de produtividade: 100 cm e a meta ideal de profundidade. O score combina profundidade media, quantidade de pontos e bonus por pontos com vestigios."
-        )
+        rodape_x = margin
+        rodape_y = margin + 5
+        rodape_linhas = [
+            "* Score de produtividade: 100 cm é a profundidade ideal. Calcula-se a média de pontos de quem escavou mais de 90 cm.",
+            "Se ninguém passar disso, usa-se a quantidade de pontos da pessoa com maior profundidade média como meta.",
+            "O score combina profundidade média (70%) e meta de pontos (30%). Cada ponto com vestígio adiciona bônus de 2 pontos.",
+            "O score pode ultrapassar 100 com os bônus.",
+            "Relatório gerado por Arqueokit - QGIS Plugin"
+        ]
+        for linha in rodape_linhas:
+            c.drawString(rodape_x, rodape_y, linha)
+            rodape_y -= 9
 
         c.save()
         feedback.pushInfo(f"Relatório gerado: {output_pdf}")
@@ -374,8 +400,10 @@ class ExportReportPDF(QgsProcessingAlgorithm):
         O score de produtividade usa uma regra simples:
         - 100 cm e a profundidade ideal;
         - a profundidade media conta mais no score;
-        - a quantidade de pontos tambem conta;
-        - pontos com vestigios entram como bonus e podem fazer o score passar de 100.
+        - a meta de pontos vem da media de quem ficou com profundidade media acima de 90 cm;
+        - se ninguem passar de 90 cm, a meta passa a ser a quantidade de pontos da pessoa com maior profundidade media;
+        - cada ponto com vestigio vale em dobro no bonus;
+        - o score pode passar de 100.
         """)
 
     def createInstance(self):
