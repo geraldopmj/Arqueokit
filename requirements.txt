@@ -1,0 +1,18 @@
+# External Python dependencies for Arqueokit.
+# These packages are not installed automatically by the QGIS Plugin Manager.
+# Install them in the same Python environment used by QGIS.
+
+reportlab==4.4.10
+pandas==3.0.2
+matplotlib==3.10.8
+seaborn==0.13.2
+rasterio==1.5.0
+scikit-learn==1.8.0
+scipy==1.17.1
+joblib==1.5.3
+scikit-image==0.26.0
+Pillow==12.2.0
+folium==0.20.0
+flet==0.84.0
+flet-desktop==0.84.0
+flet-map==0.84.0

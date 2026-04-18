@@ -1,0 +1,31 @@
+[general]
+name=Arqueokit
+qgisMinimumVersion=4.0
+description=Archaeology-focused QGIS processing tools with web export, reports, charts and raster analysis
+version=1.0
+author=Geraldo Pereira de Morais Júnior
+email=geraldo.pmj@gmail.com
+
+about=Arqueokit is a QGIS plugin designed to support archaeological workflows with processing tools for public data download, reporting, charts, raster analysis, machine learning and web map export.
+  Some algorithms require external Python packages in the QGIS Python environment, including reportlab, pandas, matplotlib, seaborn, rasterio, scikit-learn, scipy, joblib, scikit-image, Pillow, folium, flet and flet-map.
+  Some tools also depend on internet access and on the availability of third-party public services such as FUNAI and IPHAN servers.
+  Users should install the required Python packages in the QGIS environment before running the algorithms that depend on them.
+
+tracker=https://github.com/geraldopmj/Arqueokit/issues
+repository=https://github.com/geraldopmj/Arqueokit/
+# End of mandatory metadata
+
+hasProcessingProvider=True
+
+tags=archaeology, brazil, FUNAI, IPHAN, wfs, bivariate, grid
+
+homepage=https://github.com/geraldopmj/Arqueokit
+category=Vector
+icon=icon.png
+experimental=False
+
+deprecated=False
+
+# plugin_dependencies=
+
+server=False
