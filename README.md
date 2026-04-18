@@ -46,11 +46,6 @@ Example for Windows with OSGeo4W:
 3. Change to the plugin folder.
 4. Run:
 
-```bash
-cd "%APPDATA%\QGIS\QGIS4\profiles\default\python\plugins\Arqueokit"
-python -m pip install -r requirements.txt
-```
-
 5. Wait for the installation to complete.
 6. Open QGIS and then enable or install the plugin.
 
@@ -68,19 +63,6 @@ Important notes:
 4. Select the plugin ZIP file.
 5. Enable the plugin if QGIS does not enable it automatically.
 6. Open the `Processing Toolbox` and look for the `Arqueokit` provider.
-
-### Manual Installation
-
-1. Close QGIS.
-2. Copy the `Arqueokit` folder into your QGIS plugins directory.
-3. Start QGIS.
-4. Enable `Arqueokit` in the QGIS plugin manager.
-
-Typical plugin locations for QGIS 4:
-
-- Windows: `%APPDATA%\QGIS\QGIS4\profiles\default\python\plugins\`
-- Linux: `~/.local/share/QGIS/QGIS4/profiles/default/python/plugins/`
-- macOS: `~/Library/Application Support/QGIS/QGIS4/profiles/default/python/plugins/`
 
 ## Python Dependencies
 
@@ -112,67 +94,6 @@ If a tool fails because a dependency is missing, install the pinned package set 
 Some tools depend on internet access and on the availability of external public services. In particular, dataset download tools rely on third-party servers maintained by Brazilian institutions such as FUNAI and IPHAN. If those services are offline, unavailable, rate-limited, or changed by their maintainers, the related algorithms may fail or return incomplete results.
 
 ## Features
-
-The `Arqueokit` provider exposes the following processing algorithms in QGIS.
-
-### Public Data Download
-
-- `Download de Camadas da FUNAI`: loads selected FUNAI WFS layers directly into the current QGIS project.
-- `Download de Camadas IPHAN`: loads selected IPHAN WFS layers directly into the current QGIS project.
-
-### Survey Attribute Tools
-
-- `Atualizar Longitude e Latitude`: writes or updates longitude and latitude attributes for features.
-- `Inicializar Atributos da Ficha de Prospecção`: structures point survey layers for archaeological record forms by recreating standard fields, redefining IDs, updating names, and recalculating coordinates.
-- `Ordenar Pontos de NW para SE`: orders points using a northwest-to-southeast logic for structured field workflows.
-
-### Graphs and Analytical Summaries
-
-- `Contagem de Valores Únicos em Atributo`: counts unique values in a categorical field and generates a chart.
-- `Soma ou Média comparando até 5 Atributos`: compares up to five numeric attributes and generates a sum or mean chart.
-- `Soma de Atributos por Feição`: summarizes values by feature groups and exports a chart.
-- `Gráfico Burndown Temporal`: produces temporal progress-style graphics for monitoring fieldwork or production.
-
-### Geoprocessing Tools
-
-- `Grade com Melhor Cobertura (com ângulo)`: evaluates point-grid configurations, offsets, and angles to maximize coverage inside a polygon.
-- `Gerar Pontos Radiais`: generates radial point patterns from an input reference.
-- `Juntar extremidades soltas de linhas`: connects nearby loose line endpoints for cleanup and topological correction workflows.
-
-### PDF Outputs
-
-- `Exportar Fichas de Prospecção`: exports archaeological survey record sheets to PDF.
-- `Exportar Relatório Pós-Campo`: exports a survey report PDF with formatted content and optional logos.
-
-### WebGIS
-
-- `Exportar WebMapa`: exports an interactive HTML web map using Folium, combining vector layers and rendered rasters.
-
-### Raster and Remote Sensing
-
-- `Raster Bivariado`: combines two raster inputs into a bivariate output.
-- `Raster Bivariado RGB`: generates RGB-style bivariate raster outputs.
-- `Geração de Índices Espectrais`: computes spectral indices from multiband rasters and can optionally write separate outputs or stacked rasters.
-
-### Machine Learning
-
-- `Classificação Supervisionada RF`: performs supervised raster classification using Random Forest and related raster-derived features.
-
-This workflow can include:
-
-- band mapping;
-- spectral indices;
-- local entropy features;
-- optional validation samples;
-- model export and reload;
-- classified raster export;
-- JSON metric reports.
-
-### Dashboard
-
-- `Dashboard de Prospecção`: opens an interactive dashboard for point-based archaeological survey review.
-
-## Processing Catalog
 
 - `Download de Camadas da FUNAI`: downloads selected FUNAI public layers and adds them to the current QGIS project.
 - `Download de Camadas IPHAN`: downloads selected IPHAN public layers and adds them to the current QGIS project.
@@ -208,7 +129,6 @@ This workflow can include:
 - Not every tool has the same dependency profile. A simple attribute tool may work in a basic QGIS setup, while machine learning, charting, PDF export, dashboard, or web map tools may need extra libraries.
 - External services can change their endpoints, schemas, permissions, or availability without notice.
 - Large rasters and complex machine learning workflows may require significant memory and processing time.
-- Results generated by analytical and machine learning tools should always be reviewed by a qualified user before being used in formal decision-making.
 
 ## Repository and Support
 
