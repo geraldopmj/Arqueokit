@@ -68,11 +68,12 @@ class IphanDownloader(QgsProcessingAlgorithm):
         ]
 
         self.links = {
-            "Sitios Arqueológicos (Ponto)": "http://portal.iphan.gov.br/geoserver/SICG/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=SICG%3Asitios&maxFeatures=2147483647&outputFormat=application%2Fjson",
-            "Sitios Arqueológicos (Polígono)": "http://portal.iphan.gov.br/geoserver/SICG/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=SICG%3Asitios_pol&maxFeatures=2147483647&outputFormat=application%2Fjson",
-            "Instituto de Guarda": "http://portal.iphan.gov.br/geoserver/CNA/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=CNA%3Acnigp&maxFeatures=2147483647&outputFormat=application%2Fjson",
-            "Bens Materiais": "http://portal.iphan.gov.br/geoserver/SICG/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=SICG%3Atg_bem_classificacao&maxFeatures=2147483647&outputFormat=application%2Fjson",
-            "Bens Imateriais": "http://portal.iphan.gov.br/geoserver/SICG/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=SICG%3Atg_bem_imaterial&maxFeatures=2147483647&outputFormat=application%2Fjson"
+            "Sitios Arqueológicos (Ponto)": "https://geoserver.iphan.gov.br/geoserver/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=SICG%3Asitios&maxFeatures=2147483647&outputFormat=application%2Fjson",
+            "Sitios Arqueológicos (Polígono)": "https://geoserver.iphan.gov.br/geoserver/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=SICG%3Asitios_pol&maxFeatures=2147483647&outputFormat=application%2Fjson",
+            "Instituto de Guarda": "https://geoserver.iphan.gov.br/geoserver/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=CNA%3Acnigp&maxFeatures=2147483647&outputFormat=application%2Fjson",
+            "Bens Materiais": "https://geoserver.iphan.gov.br/geoserver/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=SICG%3Atg_bem_classificacao&maxFeatures=2147483647&outputFormat=application%2Fjson",
+            "Bens Imateriais": "https://geoserver.iphan.gov.br/geoserver/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=SICG%3Atg_bem_imaterial&maxFeatures=2147483647&outputFormat=application%2Fjson"
+         
         }
 
         self.addParameter(
@@ -89,7 +90,7 @@ class IphanDownloader(QgsProcessingAlgorithm):
         indices = self.parameterAsEnums(parameters, self.CAMADAS, context)
         selecionadas = [self.options[i] for i in indices]
         
-        test_url = "http://portal.iphan.gov.br/geoserver/ows"
+        test_url = "https://geoserver.iphan.gov.br/geoserver/ows"
         try:
             self._check_service_available(test_url)
         except Exception as e:
